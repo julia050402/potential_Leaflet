@@ -1,0 +1,126 @@
+<head>
+	<title>Portal Mapowy</title>
+	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+	<link rel='stylesheet' href='styl.css'>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+	<div class="tytul">
+	<h1>Embellish Map</h1>
+	</div>
+
+</head>
+<body>
+	<div id = "map"></div>
+      <script>
+        var map = L.layerGroup();
+		// mapa podkładowa
+		var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		});
+		
+		var osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'});
+			
+		//markery szkół ponadpodstwowych
+		var ZS3 = L.marker([52.603326662336144, 21.45970156856486]).bindPopup('Zespół Szkół nr 3 im Jana Kochanowskiego'),
+			CKU = L.marker([52.60275632740446, 21.459142017351176]).bindPopup('Centrum Kształcenia Ustawicznego'),
+			CKZ = L.marker([52.602845164145315, 21.455907323652227]).bindPopup('Centrum Kształcenia Zawodowego'),
+			CEZiU = L.marker([52.60197200977583, 21.456250646403706]).bindPopup('Centrum Edukacji Zawodowej i Ustawicznej'),
+			ILO = L.marker([52.5928568187159, 21.44987105258603]).bindPopup('Pierwsze Liceum Ogólnokształcące im. Cypriana Kamila Norwida'),
+			ZDZ = L.marker([52.58792931301647, 21.44510744940926]).bindPopup('Zakład Doskonalenia Zawodowego');
+		
+		//markery kościołów
+		var Idzi = L.marker([52.59407037907329, 21.460804921028853]).bindPopup('Kościół pw. św. Idziego'),
+			Wojciech = L.marker([52.591558350160156, 21.45104697744264]).bindPopup('Kościół pw. św. Wojciecha'),
+			Rodzina = L.marker([52.596484732679194, 21.424923144848332]).bindPopup('Kościół pw. św. Rodziny'),
+			Maryja = L.marker([52.57930014805382, 21.454226236327692]).bindPopup('Kościół Matki Bożej królowej Polski');
+		
+		
+		
+		//Zgrupowanie markerów
+		var school = L.layerGroup([ZS3, CKU, CKZ, CEZiU, ILO, ZDZ],),
+			church = L.layerGroup([Idzi, Wojciech, Rodzina, Maryja]);
+
+		var map = L.map('map', {
+			center: [52.5933837,21.4572428],
+			zoom: 13,
+			layers: [osm, map]
+		});
+		
+		var baseMaps = {
+			"OpenStreetMap": osm,
+			"OpenStreetMap.HOT": osmHOT
+		};
+		
+		//manualne wprowadzanie markera
+		var Lmarkerow = 1;
+
+		var markersGroup = L.layerGroup();
+		map.addLayer(markersGroup);
+		
+		//funkcja wprowadzająca marker
+		map.on('click', function(e) {
+			var markersCount = markersGroup.getLayers().length;
+
+			if (markersCount < Lmarkerow) {
+				var marker = L.marker(e.latlng).bindPopup('Twój cel').addTo(markersGroup);
+				return;
+			}
+
+			//usunięcie markera
+			markersGroup.clearLayers();
+			});
+		//Współrzedne granic miasta 	
+		var polygon = L.polygon([
+				[52.620077149647884, 21.424983793474887],
+				[52.624141352932135, 21.428417020711084],
+				[52.620077149647884, 21.458114436304186],
+				[52.60381656261024, 21.461376002178568],
+				[52.61903498545526, 21.488670158706334],
+				[52.60506759138612, 21.499828147223976],
+				[52.59787368793367, 21.499999808585784],
+				[52.59912488644685, 21.490730095048054],
+				[52.593702768131706, 21.478198815635935],
+				[52.59328565431261, 21.468070795289155],
+				[52.5907828880113, 21.460174372645906],
+				[52.5878628133185, 21.46326427715848],
+				[52.57732806961993, 21.465324213560777],
+				[52.560842897223495, 21.4605176954301],
+				[52.561677738438206, 21.455711177299424],
+				[52.56752118208903, 21.454681209128566],
+				[52.56960793759018, 21.44918804555065],
+				[52.572783598490396, 21.449229941964976],
+				[52.575412877434495, 21.439774557800135],
+				[52.57718630675178, 21.440632864609185],
+				[52.5793247584637, 21.43951706575742],
+				[52.58052433204668, 21.437199637372988],
+				[52.58240185958308, 21.439602896438327],
+				[52.5884511235108, 21.428959892006116],
+				[52.588711849093706, 21.430504842975196],
+				[52.58994905414212, 21.428437116642385],
+				[52.59284947833479, 21.43185588208891],
+				[52.605124172312316, 21.394902429600343],
+				[52.6100330869275, 21.397500719228447],
+				[52.61073431552638, 21.39432503190521],
+				[52.614240290084375, 21.39591287556683],
+				[52.61292558283448, 21.406161684375313],
+				[52.61599317240471, 21.41078086593638],
+				[52.62011216888488, 21.418864433668258],
+				[52.62379264635184, 21.421751422143927],
+
+		]).addTo(map);
+		//Menu
+		var overlayMaps = {
+			"Szkoły ponadpodstawowe": school,
+			"Kościoły": church,
+			"Granica miasta Wyszków": polygon,
+			
+		};
+		
+		var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+      </script>
+
+</body>
+</html>
